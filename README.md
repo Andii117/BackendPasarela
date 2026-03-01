@@ -104,7 +104,10 @@ npx prisma migrate dev
 npm run start:dev
 ```
 
-### Documentación de API
+### Ejecución del dockerfile
 
-La colección de Postman se encuentra disponible en:
-La carpeta docs del proyecto
+En cosola escribir el comando:
+
+```bash
+docker run -d --name backend_container -p 3000:3000 -e DATABASE_URL="postgresql://wompi_user:wompi_pass@host.docker.internal:5432/wompi_db?schema=public" -e WOMPI_PUBLIC_KEY="pub_test_vqyfdl6B3yg6HBohdCuaFhyIkAtOb6Ag" -e WOMPI_PRIVATE_KEY="prv_test_IkhF461kL7cQkTNSpeQkDILMdYIngeh4" -e WOMPI_EVENTS_ID="test_events_hCTyBJTzd8wKxn6Te57baRgg3aBF1jAr" -e WOMPI_INTEGRITY_SECRET="test_integrity_fUNiorHNTA4t1qczJsMGysJSRIYCaybF" payment-back-test
+```
