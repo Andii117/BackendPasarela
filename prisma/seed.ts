@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Iniciando el seeding de la base de datos...');
-
   // 1. Seed de Productos
   const products = [
     {
@@ -130,8 +128,6 @@ async function main() {
       documentNumber: '1111111111',
     },
   });
-
-  console.log('✅ Seeding completado con éxito.');
 }
 
 main()

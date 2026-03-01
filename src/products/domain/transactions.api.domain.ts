@@ -27,7 +27,7 @@ export class TransactionAPIDomain {
       const response = await firstValueFrom(
         this.httpService.get(url, { headers }),
       );
-      //console.log('Response data:', response.data);
+      console.log('Response data:', response.data);
 
       return response.data;
     } catch (error) {
@@ -56,7 +56,10 @@ export class TransactionAPIDomain {
       const response = await firstValueFrom(
         this.httpService.post(url, body, { headers }),
       );
-      //console.log('Response data registrar transaccion:', JSON.stringify(response.data));
+      console.log(
+        'Response data registrar transaccion:',
+        JSON.stringify(response.data),
+      );
 
       return response.data;
     } catch (error) {
