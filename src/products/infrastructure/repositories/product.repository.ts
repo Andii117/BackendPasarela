@@ -10,9 +10,30 @@ export class ProductRepository {
     return this.prisma.products.findMany();
   }
 
-  createProduct(product: ProductDTO) {
-    return this.prisma.products.create({
+  async createProduct(product: ProductDTO) {
+    return await this.prisma.products.create({
       data: product,
+    });
+  }
+
+  async updateProduct(id: string, data: any) {
+    return this.prisma.products.update({
+      where: { id },
+      data: {
+        ...data,
+        updatedAt: new Date(),
+      },
+    });
+  }
+
+  async decrementStock(id: string, quantity: number = 1) {
+    return this.prisma.products.update({
+      where: { id },
+      data: {
+        stock: {
+          decrement: quantity,
+        },
+      },
     });
   }
 }
