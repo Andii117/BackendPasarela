@@ -101,10 +101,7 @@ export class TransactionAPIDomain {
       ip: requestTransaction.clientIp,
       redirect_url: 'http://localhost:5173/status',
     };
-    console.log(
-      '**************Body for CompleteCardtransaction:*******************',
-      body,
-    );
+
     try {
       const response = await firstValueFrom(
         this.httpService.post(url, body, { headers }),

@@ -1,8 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
+
 import { TransactionDTO } from '../infrastructure/dto/transaction.dto';
 import { RequestTransactionDTO } from '../infrastructure/dto/request.transaction.dto';
 import { TransactionAPIDomain } from '../domain/transactions.api.domain';
 import { TransactionRepository } from '../infrastructure/repositories/transaction.repository';
+import type { ProductRepository } from '../domain/product.repository.interface';
 
 @Injectable()
 export class TransactionService {
@@ -11,13 +14,21 @@ export class TransactionService {
     private readonly transactionAPI: TransactionAPIDomain,
     @Inject('TransactionRepository')
     private readonly transactionRepository: TransactionRepository,
+    @Inject('ProductRepository')
+    private readonly productRepository: ProductRepository,
   ) {}
 
   async createtransaction(requestTransaction: RequestTransactionDTO) {
     let acceptance_token: string = '';
     let tokentransaction: string = '';
     let reference: string = `test-${Date.now()}`;
-    let transactionId: string = '';
+    let transactionId = '';
+    let transactionStatus = '';
+    let transactionStatusMessage: string | null = null;
+    let transactionData: TransactionDTO;
+    let idTransactionPending: string = '';
+    let estatus: string = '';
+    let intentos = 0;
 
     console.log('2. SERVICE requestTransaction');
     await this.transactionAPI.getTokentransaction().then((response) => {
@@ -37,7 +48,7 @@ export class TransactionService {
         console.log('6. Response from RegisterCardtransaction:');
         tokentransaction = response.data.id; ///Validar por q hizo esto aca
       });
-    const transactionData: TransactionDTO = {
+    transactionData = {
       external_transaction_id: 'PENDING_' + reference,
       userId: 'user-test-001',
       productId: requestTransaction.productId,
@@ -48,14 +59,10 @@ export class TransactionService {
       last_response: 'Iniciando proceso de pago',
       createdAt: new Date(),
       updatedAt: new Date(),
-      id: '',
+      id: uuidv4(),
     };
-    console.log('6.1,registrando la creación de la transaccion en pendiente');
     const newTransaction =
       await this.transactionRepository.createtransaction(transactionData);
-    console.log('6.2, transaccion registrada en pendiente:', newTransaction);
-    console.log('7. Variables before CompleteCardtransaction:');
-    console.log(' customer_email: ', requestTransaction.deliveryEmail);
     await this.transactionAPI
       .CompleteCardtransaction(
         requestTransaction,
@@ -64,20 +71,45 @@ export class TransactionService {
         acceptance_token,
       )
       .then((response) => {
-        //console.log('Response from CompleteCardtransaction:', response);
         transactionId = response.data.id;
+        transactionStatus = response.data.status;
+        transactionStatusMessage = response.data.status_message;
         console.log(' transactionId:', transactionId);
       });
 
-    console.log('8. Variables after CompleteCardtransaction:');
-    await this.transactionAPI
-      .getTransactionbyId(transactionId)
-      .then((response) => {
-        //console.log('Response from getTransactionbyId:', response);
-        const estatus = response.data.status;
-        console.log('Transaction status:', estatus);
-      });
+    idTransactionPending = newTransaction.id;
 
-    return transactionId;
+    while (
+      !['APPROVED', 'DECLINED', 'ERROR'].includes(estatus) &&
+      intentos < 5
+    ) {
+      await this.delay(3000);
+      await this.transactionAPI
+        .getTransactionbyId(transactionId)
+        .then((response) => {
+          estatus = response.data.status;
+        });
+      intentos++;
+    }
+
+    await this.transactionRepository.updateTransaction(idTransactionPending, {
+      status: estatus,
+      external_transaction_id: transactionId,
+      last_response: 'Transacción completada con status: ' + estatus,
+    });
+
+    await this.productRepository.decrementStock(
+      requestTransaction.productId,
+      1,
+    );
+    return {
+      id: transactionId,
+      status: transactionStatus,
+      status_message: transactionStatusMessage,
+    };
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
