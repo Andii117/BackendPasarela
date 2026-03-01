@@ -104,10 +104,46 @@ npx prisma migrate dev
 npm run start:dev
 ```
 
-### Ejecución del dockerfile
+### Documentación de API
 
-En cosola escribir el comando:
+La colección de Postman se encuentra disponible en:
+La carpeta docs del proyecto
 
-```bash
-docker run -d --name backend_container -p 3000:3000 -e DATABASE_URL="postgresql://wompi_user:wompi_pass@host.docker.internal:5432/wompi_db?schema=public" -e WOMPI_PUBLIC_KEY="pub_test_vqyfdl6B3yg6HBohdCuaFhyIkAtOb6Ag" -e WOMPI_PRIVATE_KEY="prv_test_IkhF461kL7cQkTNSpeQkDILMdYIngeh4" -e WOMPI_EVENTS_ID="test_events_hCTyBJTzd8wKxn6Te57baRgg3aBF1jAr" -e WOMPI_INTEGRITY_SECRET="test_integrity_fUNiorHNTA4t1qczJsMGysJSRIYCaybF" payment-back-test
-```
+### npm run test:cov
+
+------------------------------------------|---------|----------|---------|---------|-------------------
+File | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+------------------------------------------|---------|----------|---------|---------|-------------------
+All files | 99.06 | 80.51 | 95.55 | 98.92 |  
+ src | 90.47 | 75 | 66.66 | 86.66 |  
+ app.controller.ts | 100 | 75 | 100 | 100 | 6  
+ app.service.ts | 100 | 100 | 100 | 100 |  
+ prisma.service.ts | 75 | 100 | 33.33 | 66.66 | 14-18  
+ src/products/application | 100 | 81.25 | 100 | 100 |  
+ product.service.ts | 100 | 100 | 100 | 100 |  
+ transaction.service.ts | 100 | 83.33 | 100 | 100 | 18  
+ user.service.ts | 100 | 75 | 100 | 100 | 9  
+ src/products/domain | 100 | 91.66 | 100 | 100 |  
+ product.entity.ts | 100 | 100 | 100 | 100 |  
+ transaction.entity.ts | 100 | 100 | 100 | 100 |  
+ transactions.api.domain.ts | 100 | 91.66 | 100 | 100 | 12  
+ src/products/infrastructure/controllers | 100 | 78.12 | 100 | 100 |  
+ product.controller.ts | 100 | 80 | 100 | 100 | 14,24  
+ transaction.controller.ts | 100 | 75 | 100 | 100 | 15-18  
+ user.controller.ts | 100 | 78.57 | 100 | 100 | 8-11,18  
+ src/products/infrastructure/dto | 100 | 100 | 100 | 100 |  
+ product.dto.ts | 100 | 100 | 100 | 100 |  
+ request.transaction.dto.ts | 100 | 100 | 100 | 100 |  
+ transaction.dto.ts | 100 | 100 | 100 | 100 |  
+ user.dto.ts | 100 | 100 | 100 | 100 |  
+ src/products/infrastructure/repositories | 100 | 76.92 | 100 | 100 |  
+ product.repository.ts | 100 | 80 | 100 | 100 | 7  
+ transaction.repository.ts | 100 | 75 | 100 | 100 | 7  
+ user.repository.ts | 100 | 75 | 100 | 100 | 9  
+------------------------------------------|---------|----------|---------|---------|-------------------
+
+Test Suites: 16 passed, 16 total
+Tests: 71 passed, 71 total
+Snapshots: 0 total
+Time: 16.887 s
+Ran all test suites.

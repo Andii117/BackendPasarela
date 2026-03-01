@@ -1,24 +1,29 @@
-# ETAPA 1: BUILD
-FROM node:20 AS builder
+# Etapa 1: Build
+FROM node:20-alpine AS builder
+
+# Instalamos las dependencias necesarias para Prisma en Alpine
+RUN apk add --no-cache openssl libc6-compat
 
 WORKDIR /app
 
-# Instalar dependencias
 COPY package*.json ./
 COPY prisma ./prisma/
-RUN npm install
 
-# Copiar código y construir
-COPY . .
+RUN npm install
+# Generamos el cliente para Linux
 RUN npx prisma generate
+
+COPY . .
 RUN npm run build
 
-# ETAPA 2: RUN
-FROM node:20
+# Etapa 2: Run
+FROM node:20-alpine
+
+# IMPORTANTE: También necesitamos openssl en la imagen de ejecución
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-# Copiamos las dependencias y la carpeta construida
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
@@ -26,4 +31,5 @@ COPY --from=builder /app/prisma ./prisma
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main"]
+# El comando que automatiza todo
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/prisma/seed.js && node dist/src/main"]
