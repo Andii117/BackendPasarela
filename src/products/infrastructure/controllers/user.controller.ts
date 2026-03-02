@@ -5,6 +5,8 @@ import {
   Param,
   NotFoundException,
   Body,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from 'src/products/application/user.service';
 import { UserDTO } from '../dto/user.dto';
@@ -24,5 +26,16 @@ export class UserController {
   async createUsers(@Body() user: UserDTO) {
     const createdUser = await this.userService.createuser(user);
     return createdUser;
+  }
+
+  @Get('health')
+  @HttpCode(HttpStatus.OK)
+  healthCheck() {
+    console.log('Health check endpoint called');
+    return {
+      status: 'ok - 200',
+      timestamp: new Date().toISOString(),
+      service: 'payment-backend',
+    };
   }
 }
