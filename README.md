@@ -104,6 +104,62 @@ npx prisma migrate dev
 npm run start:dev
 ```
 
+### POSTMAN COLLECTION
+
+```bash
+{
+  "info": {
+    "_postman_id": "39939bfd-f194-4924-9b08-f3c1676039ad",
+    "name": "Payment Checkout API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "7057125",
+    "_collection_link": "https://go.postman.co/collection/7057125-39939bfd-f194-4924-9b08-f3c1676039ad?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Backend Endpoints",
+      "item": [
+        {
+          "name": "product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/products/getAllProducts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "products",
+                "getAllProducts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "transaction",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001"
+    }
+  ]
+}
+```
+
+
 ### Documentación de API
 
 La colección de Postman se encuentra disponible en:
